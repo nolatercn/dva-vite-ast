@@ -70,17 +70,18 @@ const methods = {
       // get parent statement
       .map(path => path.parent)
       .at(0);
-    const modelName = modelPath.split('/').pop()
+    const modelName = modelPath.split('/').pop();
+    console.log(modelName);
     collection[insertMethod].call(
       collection,
       j.expressionStatement(
         j.callExpression(
           j.memberExpression(object, j.identifier('model')),
           [
-            // j.callExpression(j.identifier('require'), [
-            //   j.literal(modelPath)
-            // ])
-            `import ${modelName} from ${modelPath}`
+            j.callExpression(j.identifier('require'), [
+              j.literal(modelPath)
+            ])
+            // `import ${modelName} from ${modelPath}`
           ]
         )
       )
