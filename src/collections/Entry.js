@@ -43,7 +43,18 @@ const methods = {
     return Collection.fromPaths(pathes, this);
   },
 
+  findImportNode(modelPath: string) {
+    const modelName = modelPath.split('/').pop();
+    const newImport = j.importDeclaration(
+      [j.importDefaultSpecifier(j.identifier(modelName))],
+      j.literal(modelPath),
+    );
+    this.find(j.ImportDeclaration, { source: { value: 'react' } }).insertAfter(newImport)
+    return modelName
+  }
+
   addModel(modelPath) {
+    const modelName = this.findImportNode()
     const points = this.findModelInjectPoints();
     if (points.size() === 0) return;
 
@@ -70,18 +81,14 @@ const methods = {
       // get parent statement
       .map(path => path.parent)
       .at(0);
-    const modelName = modelPath.split('/').pop();
-    console.log(modelName);
+
     collection[insertMethod].call(
       collection,
       j.expressionStatement(
         j.callExpression(
           j.memberExpression(object, j.identifier('model')),
           [
-            j.callExpression(j.identifier('require'), [
-              j.literal(modelPath)
-            ])
-            // `import ${modelName} from ${modelPath}`
+            j.variableDeclaration(modelName)
           ]
         )
       )

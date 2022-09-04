@@ -1,6 +1,6 @@
 {
   "name": "dva-vite-ast",
-  "version": "0.0.2",
+  "version": "0.0.6",
   "description": "dva static analysis based on javascript ast.",
   "files": [
     "boilerplates",
