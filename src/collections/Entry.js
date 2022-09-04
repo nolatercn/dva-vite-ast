@@ -43,18 +43,19 @@ const methods = {
     return Collection.fromPaths(pathes, this);
   },
 
-  findImportNode(modelPath: string) {
+  findImportNode(modelPath) {
     const modelName = modelPath.split('/').pop();
     const newImport = j.importDeclaration(
       [j.importDefaultSpecifier(j.identifier(modelName))],
       j.literal(modelPath),
     );
-    this.find(j.ImportDeclaration, { source: { value: 'react' } }).insertAfter(newImport)
-    return modelName
-  }
+    this.find(j.ImportDeclaration, { source: { value: 'react' } }).insertAfter(newImport);
+    return modelName;
+  },
 
   addModel(modelPath) {
-    const modelName = this.findImportNode()
+
+    const modelName = this.findImportNode(modelPath);
     const points = this.findModelInjectPoints();
     if (points.size() === 0) return;
 
@@ -88,7 +89,7 @@ const methods = {
         j.callExpression(
           j.memberExpression(object, j.identifier('model')),
           [
-            j.variableDeclaration(modelName)
+            j.identifier(modelName)
           ]
         )
       )
